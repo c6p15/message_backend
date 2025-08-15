@@ -1,6 +1,6 @@
+const UserEntity = require('../../domain/users/UserEntity.js')
 const UserRepository = require('../../domain/users/UserRepository.js')
 const UserModel = require('../database/models/user.model.js')
-const UserEntity = require('../../domain/users/UserEntity.js')
 
 class UserRepositoryImpl extends UserRepository {
   async create(userData) {
