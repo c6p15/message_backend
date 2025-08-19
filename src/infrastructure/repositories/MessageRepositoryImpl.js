@@ -1,11 +1,11 @@
-const MessageEntity = require("../../domain/messages/MessageEntity.js");
-const MessageRepository = require("../../domain/messages/MessageRepository.js");
-const MessageModel = require("../database/models/message.model.js");
+const MessageEntity = require("../../domain/messages/MessageEntity.js")
+const MessageRepository = require("../../domain/messages/MessageRepository.js")
+const MessageModel = require("../database/models/message.model.js")
 
 class MessageRepositoryImpl extends MessageRepository {
   async createMessage(messageData) {
-    const message = await MessageModel.create(messageData);
-    return new MessageEntity(message.toObject());
+    const message = await MessageModel.create(messageData)
+    return new MessageEntity(message.toObject())
   }
 
   async getMessagesBetweenUsers(userId1, userId2) {
@@ -16,15 +16,15 @@ class MessageRepositoryImpl extends MessageRepository {
       ],
     })
       .sort({ createdAt: 1 })
-      .lean();
+      .lean()
 
-    return messages.map((msg) => new MessageEntity(msg));
+    return messages.map((msg) => new MessageEntity(msg))
   }
 
   async replyToMessage({ message, files = [], from, to, reply_to }) {
-    const parentMessage = await MessageModel.findById(reply_to);
+    const parentMessage = await MessageModel.findById(reply_to)
     if (reply_to && !parentMessage) {
-      throw new Error("Parent message not found");
+      throw new Error("Parent message not found")
     }
 
     const replyMessage = await MessageModel.create({
@@ -33,26 +33,26 @@ class MessageRepositoryImpl extends MessageRepository {
       from,
       to,
       reply_to: reply_to || null,
-    });
+    })
 
-    return new MessageEntity(replyMessage.toObject());
+    return new MessageEntity(replyMessage.toObject())
   }
 
   async findById(id) {
-    const message = await MessageModel.findById(id);
-    if (!message) return null;
-    return new MessageEntity(message.toObject());
+    const message = await MessageModel.findById(id)
+    if (!message) return null
+    return new MessageEntity(message.toObject())
   }
 
   async deleteMessage(messageId, userId) {
     const message = await MessageModel.findOne({
       _id: messageId,
       from: userId,
-    });
-    if (!message) return false;
-    await message.deleteOne();
-    return true;
+    })
+    if (!message) return false
+    await message.deleteOne()
+    return true
   }
 }
 
-module.exports = MessageRepositoryImpl;
+module.exports = MessageRepositoryImpl
